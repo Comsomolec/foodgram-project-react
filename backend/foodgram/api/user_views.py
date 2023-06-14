@@ -1,7 +1,6 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-from rest_framework import filters, mixins, status, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import (
@@ -9,9 +8,9 @@ from rest_framework.permissions import (
     IsAuthenticated,
 )
 
-from api.paginations import CustomPagination
-from api.permissions import AdminAuthorPermission
-from .serializers import (
+from .paginations import CustomPagination
+from .permissions import AdminAuthorPermission
+from .user_serializers import (
     UserCreateSerializer,
     UserChangePasswordSerializer,
     UserSerializer,
@@ -23,15 +22,15 @@ from users.models import User, Subscription
 
 
 class UsersViewSet(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  mixins.RetrieveModelMixin,
-                  viewsets.GenericViewSet):
+                   mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   viewsets.GenericViewSet):
     """
     Пользовательский вьюсет для создания, изменения,
     выдачи объекта или списка объектов.
     """
     queryset = User.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -42,7 +41,7 @@ class UsersViewSet(mixins.ListModelMixin,
     @action(
         methods=['GET', 'PATCH', ],
         detail=False,
-        permission_classes=(AdminAuthorPermission,),
+        permission_classes=(AdminAuthorPermission, ),
         url_path='me',)
     def get_current_user_info(self, request):
         if request.method == 'GET':
@@ -59,8 +58,8 @@ class UsersViewSet(mixins.ListModelMixin,
 
     @action(methods=['POST', ],
             detail=False,
-            permission_classes=(IsAuthenticated,),
-            url_path='set_password',)
+            permission_classes=(IsAuthenticated, ),
+            url_path='set_password', )
     def set_password(self, request):
         serializer = UserChangePasswordSerializer(
             request.user, data=request.data)
@@ -71,7 +70,7 @@ class UsersViewSet(mixins.ListModelMixin,
     @action(methods=['POST', 'DELETE', ],
             detail=True,
             permission_classes=(IsAuthenticated,),
-            url_path='subscribe',)
+            url_path='subscribe', )
     def get_subscribe(self, request, pk):
         author = get_object_or_404(User, id=pk)
         if request.method == 'POST':
@@ -80,7 +79,7 @@ class UsersViewSet(mixins.ListModelMixin,
             serializer.is_valid(raise_exception=True)
             serializer.save(user=self.request.user, author=author)
             show_content_serializer = SubscriptionSerializer(
-                author) # context={'request': request})
+                author, context={'request': request})
             return Response(show_content_serializer.data,
                             status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
@@ -90,10 +89,10 @@ class UsersViewSet(mixins.ListModelMixin,
 
     @action(methods=['GET', ],
             detail=False,
-            permission_classes=(IsAuthenticated,),
-            pagination_class = CustomPagination,
+            permission_classes=(IsAuthenticated, ),
+            pagination_class=CustomPagination,
             url_path='subscriptions',)
-    def get_subscriptions(self, request): 
+    def get_subscriptions(self, request):
         queryset = User.objects.filter(author__user=request.user)
         page = self.paginate_queryset(queryset)
         serializer = SubscriptionSerializer(

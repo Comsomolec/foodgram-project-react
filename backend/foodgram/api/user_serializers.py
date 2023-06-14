@@ -6,6 +6,7 @@ from users.models import User, Subscription
 
 FORBIDDEN_NAME = ['me', 'subscriptions', 'subscribe', 'set_password']
 
+
 class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -59,6 +60,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
         instance.save()
         return validated_data
 
+
 class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
@@ -79,6 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
             return False
         return object.author.filter(user=request.user).exists()
 
+
 class SubscriptionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
@@ -88,7 +91,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
                 queryset=Subscription.objects.all(),
                 fields=('user', 'author'),
                 message='Вы уже подписаны на этого автора'
-            ) 
+            )
         ]
 
     def validate(self, data):
@@ -97,6 +100,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
                 'Нельзя подписаться на самого себя.'
             )
         return data
+
 
 class SubscriptionShowRecipes(serializers.ModelSerializer):
     class Meta:
@@ -107,6 +111,7 @@ class SubscriptionShowRecipes(serializers.ModelSerializer):
             'image',
             'cooking_time'
         )
+
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     recipes = serializers.SerializerMethodField()
@@ -130,7 +135,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         author_recipes = object.recipes.all()
         if request.GET.get('recipes_limit'):
-            recipes = recipes[int('recipes_limit')]
+            author_recipes = author_recipes[:int('recipes_limit')]
         return SubscriptionShowRecipes(author_recipes, many=True).data
 
     def get_recipes_count(self, object):
@@ -138,6 +143,4 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, object):
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
         return object.author.filter(user=request.user).exists()

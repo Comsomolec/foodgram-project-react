@@ -4,11 +4,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-bif8z5(l8bgt!mt+mmgi=-&=1d*&3jyu(avpk(gh&ewhpeiqf6'
+SECRET_KEY = os.getenv('SECRET_KEY', default='secret_key')
 
-DEBUG = True
+DEBUG = bool(os.getenv('DEBUG', default=False))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=[])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -94,6 +94,15 @@ DJOSER = {
     'LOGIN_FIELD': 'email'
 }
 
+
+AUTH_USER_MODEL = 'users.User'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'Europe/Moscow'
@@ -124,29 +133,3 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ]
 }
-
-AUTH_USER_MODEL = 'users.User'
-
-FILE_NAME = 'Избранное'
-# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-
-# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
-
-
-
-# SLUG_LIMIT = 50
-
-# NAME_GENRE_CATEGORY_TITLE_LIMIT = 256
-# NAME_LIMIT = 150
-
-# EMAIL_LIMIT = 254
-
-# CODE_LIMIT = 255
-
-# ROLE_LIMIT = 12
-
-# EMAIL_ERR = 'Электронная почта уже занята!'
-
-# NAME_ERR = 'Неправильные данные!'
-
-# REG_PATTERN = r'[\w\.@+-]+'

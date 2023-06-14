@@ -5,8 +5,6 @@ from users.models import User
 
 
 class Ingredient(models.Model):
-
-    TEST = 'hello'
     name = models.CharField(
         max_length=50,
         verbose_name='Название ингредиента'
@@ -28,10 +26,10 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
-    
+
 
 class Tag(models.Model):
-    name = models.CharField('Название ингредиента', max_length=50, unique=True)
+    name = models.CharField('Название', max_length=50, unique=True)
     color = models.CharField(
         max_length=7,
         unique=True,
@@ -58,7 +56,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    
+
     PATTERN = (
         'Author: {author}, Name: {name}, Date: {date}, Text: {text:.15}.'
     )
@@ -73,7 +71,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='Recipe_ingredients',
-        through_fields=('recipe', 'ingredient'),
+        related_name='recipes',
         verbose_name='Ингредиенты'
     )
     tags = models.ManyToManyField(
@@ -98,7 +96,7 @@ class Recipe(models.Model):
     def __str__(self):
         return self.PATTERN.format(
             author=self.author.username,
-            group=self.name,
+            name=self.name,
             date=self.pub_date,
             text=self.text,
         )
@@ -149,6 +147,7 @@ class Favorite(models.Model):
 
     class Meta:
         verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
@@ -157,7 +156,7 @@ class Favorite(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user.username} - {self.recipe.name}' # изменить
+        return f'{self.user.username} - {self.recipe.name}'
 
 
 class Shopping_cart(models.Model):
@@ -176,6 +175,7 @@ class Shopping_cart(models.Model):
 
     class Meta:
         verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
@@ -184,4 +184,4 @@ class Shopping_cart(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user.username} - {self.recipe.name}' # изменить
+        return f'{self.user.username} - {self.recipe.name}'
