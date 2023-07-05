@@ -59,6 +59,7 @@ class Shopping_cartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe', )
     list_editable = ('user', 'recipe', )
 
+
 @admin.register(Recipe_ingredients)
 class RecipeIngredientsAdmin(admin.ModelAdmin):
     list_display = ('id', 'recipe', 'ingredient', 'amount', )

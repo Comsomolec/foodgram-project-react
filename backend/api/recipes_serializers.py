@@ -55,7 +55,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = '__all__'
         exclude = ('author', 'pub_date', )
 
     def validate_ingredients(self, value):
@@ -129,7 +128,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    image = Base64ImageField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -151,6 +150,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         if self.context['request'].user.is_authenticated:
             return Shopping_cart.objects.filter(
                 user=self.context['request'].user, recipe=object).exists()
+    
+    def get_image(self, object):
+        return object.image.url
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, object):
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
+        if request.user.is_anonymous:
             return False
         return object.author.filter(user=request.user).exists()
 
@@ -58,7 +58,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user = User.objects.create(email=validated_data['email'],
+        user = User(email=validated_data['email'],
                     first_name=validated_data['first_name'],
                     last_name=validated_data['last_name'],
                     username=validated_data['username']
@@ -124,8 +124,10 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     def get_recipes(self, object):
         request = self.context.get('request')
         author_recipes = object.recipes.all()
-        if request.GET.get('recipes_limit'):
-            author_recipes = author_recipes[:int('recipes_limit')]
+        recipes_limit = request.GET.get('recipes_limit')
+        if recipes_limit:
+            recipes_limit = int(recipes_limit)
+            author_recipes = author_recipes[:recipes_limit]
         return ShowShortRecipes(author_recipes, many=True).data
 
     def get_recipes_count(self, object):

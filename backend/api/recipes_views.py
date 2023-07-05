@@ -7,9 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import (
-    IsAuthenticated, IsAuthenticatedOrReadOnly
-)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
 from .recipes_serializers import (
@@ -22,8 +20,8 @@ from .recipes_serializers import (
 )
 from .users_serializers import ShowShortRecipes
 from .paginations import CustomPagination
-from .permissions import Author
-from core.filters import RecipeFilter
+from .permissions import AuthorOrReadOnly
+from core.filters import RecipeFilter, IngredientFilter
 from recipes.models import (
     Ingredient,
     Tag,
@@ -37,8 +35,7 @@ from recipes.models import (
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes=[IsAuthenticated]
-    filter_backends = [SearchFilter]
+    filter_backends = [IngredientFilter]
     search_fields = ['^name']
     pagination_class = None
 
@@ -46,13 +43,12 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes=[IsAuthenticated]
     pagination_class = None
 
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly, Author]
+    permission_classes = [AuthorOrReadOnly]
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = RecipeFilter
@@ -63,7 +59,7 @@ class RecipeViewSet(ModelViewSet):
             return RecipeCreateSerializer
         else:
             return RecipeSerializer
-    
+
     @staticmethod
     def favorite_shopping_cart(request, pk, model, serializer):
         user = request.user
@@ -82,7 +78,7 @@ class RecipeViewSet(ModelViewSet):
             get_object_or_404(model, user=user,
                               recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     @action(
             detail=True,
             methods=['POST', 'DELETE'],

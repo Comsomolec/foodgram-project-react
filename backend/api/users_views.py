@@ -29,7 +29,7 @@ class UsersViewSet(CreateListRetrieveViewSet):
 
     @action(
             detail=False,
-            permission_classes=[IsAuthenticated],
+            permission_classes=[CurrentUser],
             url_path='me',
             url_name='me',
     )

@@ -2,15 +2,17 @@ from django_filters.rest_framework import FilterSet
 from django_filters.filters import (
     BooleanFilter,
     ModelChoiceField,
-    ModelMultipleChoiceFilter
+    ModelMultipleChoiceFilter    
 )
 from django_filters.widgets import BooleanWidget
+from rest_framework.filters import SearchFilter
 
 from recipes.models import Recipe, Tag
 from users.models import User
 
 
 # class TagFilter(FilterSet):
+#   """Фильтрация по тегам."""
 #     tags = ModelMultipleChoiceFilter(
 #         field_name='tags__slug',
 #         to_field_name='slug',
@@ -23,6 +25,7 @@ from users.models import User
 
 
 class RecipeFilter(FilterSet):
+    """Фильтрация рецептов."""
     author = ModelChoiceField(queryset=User.objects.all())
     tags = ModelMultipleChoiceFilter(
         field_name='tags__slug',
@@ -49,4 +52,8 @@ class RecipeFilter(FilterSet):
         if value and self.request.user.is_authenticated:
             return queryset.filter(recipe_in_cart__user=self.request.user)
         return queryset
-    
+
+
+class IngredientFilter(SearchFilter):
+    """Фильтрация ингредиентов."""
+    search_param = 'name'
