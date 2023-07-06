@@ -28,21 +28,21 @@ class UsersViewSet(CreateListRetrieveViewSet):
             return UserSerializer
 
     @action(
-            detail=False,
-            permission_classes=[CurrentUser],
-            url_path='me',
-            url_name='me',
+        detail=False,
+        permission_classes=[CurrentUser],
+        url_path='me',
+        url_name='me',
     )
     def me(self, request):
         serializer = UserSerializer(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
-            detail=False,
-            methods=['POST'],
-            permission_classes=[CurrentUser],
-            url_path='set_password',
-            url_name='set_password',
+        detail=False,
+        methods=['POST'],
+        permission_classes=[CurrentUser],
+        url_path='set_password',
+        url_name='set_password',
     )
     def set_password(self, request):
         serializer = UserChangePasswordSerializer(
@@ -56,11 +56,11 @@ class UsersViewSet(CreateListRetrieveViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(
-            detail=True,
-            methods=['POST', 'DELETE'],
-            permission_classes=[IsAuthenticated],
-            url_path='subscribe',
-            url_name='subscribe',
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=[IsAuthenticated],
+        url_path='subscribe',
+        url_name='subscribe',
     )
     def subscribe(self, request, pk):
         user = self.request.user
@@ -82,12 +82,13 @@ class UsersViewSet(CreateListRetrieveViewSet):
                               author=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False,
-            permission_classes=[IsAuthenticated],
-            pagination_class=CustomPagination,
-            url_path='subscriptions',
-            url_name='subscriptions',
-            )
+    @action(
+        detail=False,
+        permission_classes=[IsAuthenticated],
+        pagination_class=CustomPagination,
+        url_path='subscriptions',
+        url_name='subscriptions',
+    )
     def subscriptions(self, request):
         queryset = User.objects.filter(author__user=request.user)
         page = self.paginate_queryset(queryset)

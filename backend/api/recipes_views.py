@@ -80,22 +80,22 @@ class RecipeViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-            detail=True,
-            methods=['POST', 'DELETE'],
-            permission_classes=[IsAuthenticated],
-            url_path='favorite',
-            url_name='favorite',
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=[IsAuthenticated],
+        url_path='favorite',
+        url_name='favorite',
     )
     def favorite(self, request, pk):
         return self.favorite_shopping_cart(
             request, pk, Favorite, FavoriteSerializer)
 
     @action(
-            detail=True,
-            methods=['POST', 'DELETE'],
-            permission_classes=[IsAuthenticated],
-            url_path='shopping_cart',
-            url_name='shopping_cart',
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=[IsAuthenticated],
+        url_path='shopping_cart',
+        url_name='shopping_cart',
     )
     def shopping_cart(self, request, pk):
         return self.favorite_shopping_cart(
@@ -103,10 +103,10 @@ class RecipeViewSet(ModelViewSet):
         )
 
     @action(
-            detail=False,
-            permission_classes=[IsAuthenticated],
-            url_path='download_shopping_cart',
-            url_name='download_shopping_cart',
+        detail=False,
+        permission_classes=[IsAuthenticated],
+        url_path='download_shopping_cart',
+        url_name='download_shopping_cart',
     )
     def download_shopping_cart(self, request):
         ingredient_queryset = Recipe_ingredients.objects.filter(

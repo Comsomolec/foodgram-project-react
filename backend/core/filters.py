@@ -32,7 +32,7 @@ class RecipeFilter(FilterSet):
         field_name='tags__slug',
         to_field_name='slug',
         queryset=Tag.objects.all()
-        )
+    )
     is_favorite = BooleanFilter(
         method='filter_is_favorite', widget=BooleanWidget()
     )
