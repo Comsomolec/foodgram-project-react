@@ -41,6 +41,7 @@ class RecipeIngredientGetSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
+
     class Meta:
         model = Recipe_ingredients
         fields = ('id', 'name', 'measurement_unit', 'amount', )
@@ -49,7 +50,7 @@ class RecipeIngredientGetSerializer(serializers.ModelSerializer):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientCreateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
-        queryset = Tag.objects.all(), many=True
+        queryset=Tag.objects.all(), many=True
     )
     image = Base64ImageField()
 
@@ -115,7 +116,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.tags.set(tags)
         return super().update(instance, validated_data)
 
-
     def to_representation(self, instance):
         return RecipeSerializer(
             instance, context={'request': self.context.get('request')}
@@ -150,7 +150,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         if self.context['request'].user.is_authenticated:
             return Shopping_cart.objects.filter(
                 user=self.context['request'].user, recipe=object).exists()
-    
+
     def get_image(self, object):
         return object.image.url
 

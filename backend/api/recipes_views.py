@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import OrderingFilter
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -83,8 +83,8 @@ class RecipeViewSet(ModelViewSet):
             detail=True,
             methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated],
-            url_path = 'favorite',
-            url_name = 'favorite',
+            url_path='favorite',
+            url_name='favorite',
     )
     def favorite(self, request, pk):
         return self.favorite_shopping_cart(
@@ -94,8 +94,8 @@ class RecipeViewSet(ModelViewSet):
             detail=True,
             methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated],
-            url_path = 'shopping_cart',
-            url_name = 'shopping_cart',
+            url_path='shopping_cart',
+            url_name='shopping_cart',
     )
     def shopping_cart(self, request, pk):
         return self.favorite_shopping_cart(
@@ -105,8 +105,8 @@ class RecipeViewSet(ModelViewSet):
     @action(
             detail=False,
             permission_classes=[IsAuthenticated],
-            url_path = 'download_shopping_cart',
-            url_name = 'download_shopping_cart',
+            url_path='download_shopping_cart',
+            url_name='download_shopping_cart',
     )
     def download_shopping_cart(self, request):
         ingredient_queryset = Recipe_ingredients.objects.filter(

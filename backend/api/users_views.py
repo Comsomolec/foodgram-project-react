@@ -41,8 +41,8 @@ class UsersViewSet(CreateListRetrieveViewSet):
             detail=False,
             methods=['POST'],
             permission_classes=[CurrentUser],
-            url_path = 'set_password',
-            url_name = 'set_password',
+            url_path='set_password',
+            url_name='set_password',
     )
     def set_password(self, request):
         serializer = UserChangePasswordSerializer(
@@ -59,8 +59,8 @@ class UsersViewSet(CreateListRetrieveViewSet):
             detail=True,
             methods=['POST', 'DELETE'],
             permission_classes=[IsAuthenticated],
-            url_path = 'subscribe',
-            url_name = 'subscribe',
+            url_path='subscribe',
+            url_name='subscribe',
     )
     def subscribe(self, request, pk):
         user = self.request.user
@@ -85,18 +85,18 @@ class UsersViewSet(CreateListRetrieveViewSet):
     @action(detail=False,
             permission_classes=[IsAuthenticated],
             pagination_class=CustomPagination,
-            url_path = 'subscriptions',
-            url_name = 'subscriptions',
-    )
+            url_path='subscriptions',
+            url_name='subscriptions',
+            )
     def subscriptions(self, request):
         queryset = User.objects.filter(author__user=request.user)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscriptionSerializer(
-            page, many=True, context={'request': request}
-        )
+                page, many=True, context={'request': request}
+            )
             return self.get_paginated_response(serializer.data)
         serializer = SubscriptionSerializer(
             queryset, many=True, context={'request': request}
-        )
+            )
         return Response(serializer.data)

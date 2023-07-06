@@ -9,6 +9,7 @@ from .models import (
     Recipe_ingredients
 )
 
+
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit', )
@@ -27,7 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
     readonly_fields = ('in_favorites', )
     list_filter = ('author', 'name', 'tags', )
     fileds = (
-        'name', 'author', 'text', 'tags', 
+        'name', 'author', 'text', 'tags',
         'ingredients', 'cooking_time', 'image', 'pub_date',
     )
 

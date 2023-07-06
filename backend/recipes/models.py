@@ -108,6 +108,7 @@ class Recipe(models.Model):
             text=self.text,
         )
 
+
 class Recipe_ingredients(models.Model):
     recipe = models.ForeignKey(
         Recipe,

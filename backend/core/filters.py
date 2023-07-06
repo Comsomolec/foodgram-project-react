@@ -2,9 +2,10 @@ from django_filters.rest_framework import FilterSet
 from django_filters.filters import (
     BooleanFilter,
     ModelChoiceField,
-    ModelMultipleChoiceFilter    
+    ModelMultipleChoiceFilter
 )
 from django_filters.widgets import BooleanWidget
+
 from rest_framework.filters import SearchFilter
 
 from recipes.models import Recipe, Tag

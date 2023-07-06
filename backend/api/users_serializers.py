@@ -9,6 +9,7 @@ from users.models import User, Subscription
 
 class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
         fields = (
@@ -45,7 +46,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 'Пользователь с таким username уже существует'
             )
         return value
-    
+
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError(
@@ -58,11 +59,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user = User(email=validated_data['email'],
-                    first_name=validated_data['first_name'],
-                    last_name=validated_data['last_name'],
-                    username=validated_data['username']
-               )
+        user = User(
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            username=validated_data['username']
+            )
         user.set_password(validated_data['password'])
         user.save()
         return user
@@ -75,7 +77,7 @@ class UserChangePasswordSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         password_validation.validate_password(value)
         return value
-    
+
     def update(self, instance, validated_data):
         new_password = validated_data['new_password']
         current_password = validated_data['current_password']
