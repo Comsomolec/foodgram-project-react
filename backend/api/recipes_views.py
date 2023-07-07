@@ -1,15 +1,17 @@
 from django.db.models import Sum
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-from rest_framework.filters import OrderingFilter
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
+from .paginations import CustomPagination
+from .permissions import AuthorOrReadOnly
 from .recipes_serializers import (
     IngredientSerializer,
     TagSerializer,
@@ -19,16 +21,14 @@ from .recipes_serializers import (
     ShoppingCartSerializer
 )
 from .users_serializers import ShowShortRecipes
-from .paginations import CustomPagination
-from .permissions import AuthorOrReadOnly
 from core.filters import RecipeFilter, IngredientFilter
 from recipes.models import (
     Ingredient,
     Tag,
     Recipe,
-    Recipe_ingredients,
+    RecipeIngredient,
     Favorite,
-    Shopping_cart
+    ShoppingCart
 )
 
 
@@ -74,10 +74,9 @@ class RecipeViewSet(ModelViewSet):
             return Response(
                 content_serializer.data, status=status.HTTP_201_CREATED
             )
-        if request.method == 'DELETE':
-            get_object_or_404(model, user=user,
-                              recipe=recipe).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        get_object_or_404(model, user=user,
+                          recipe=recipe).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -99,7 +98,7 @@ class RecipeViewSet(ModelViewSet):
     )
     def shopping_cart(self, request, pk):
         return self.favorite_shopping_cart(
-            request, pk, Shopping_cart, ShoppingCartSerializer
+            request, pk, ShoppingCart, ShoppingCartSerializer
         )
 
     @action(
@@ -109,11 +108,11 @@ class RecipeViewSet(ModelViewSet):
         url_name='download_shopping_cart',
     )
     def download_shopping_cart(self, request):
-        ingredient_queryset = Recipe_ingredients.objects.filter(
+        ingredient_queryset = RecipeIngredient.objects.filter(
             recipe__recipe_in_cart__user=request.user
         ).values(
             'ingredient__name', 'ingredient__measurement_unit'
-        ).annotate(amount=Sum('amount'))
+        ).annotate(total=Sum('amount'))
         ingredient_list = [
             f'Список покупок {self.request.user.first_name}\n',
             '|Наименование|  |Ед. изм.|  |Количество|\n'

@@ -5,6 +5,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from .paginations import CustomPagination
+from .permissions import CurrentUser
 from .users_serializers import (
     UserSerializer,
     UserCreateSerializer,
@@ -12,8 +14,6 @@ from .users_serializers import (
     SubscriptionSerializer,
     SubscriptionCreateSerializer
 )
-from .paginations import CustomPagination
-from .permissions import CurrentUser
 from core.mixins import CreateListRetrieveViewSet
 from users.models import User, Subscription
 
@@ -24,8 +24,7 @@ class UsersViewSet(CreateListRetrieveViewSet):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return UserCreateSerializer
-        else:
-            return UserSerializer
+        return UserSerializer
 
     @action(
         detail=False,
@@ -48,12 +47,9 @@ class UsersViewSet(CreateListRetrieveViewSet):
         serializer = UserChangePasswordSerializer(
             request.user, data=request.data
         )
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -77,10 +73,9 @@ class UsersViewSet(CreateListRetrieveViewSet):
             return Response(
                 content_serializer.data, status=status.HTTP_201_CREATED
             )
-        if request.method == 'DELETE':
-            get_object_or_404(Subscription, user=user,
-                              author=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        get_object_or_404(Subscription, user=user,
+                          author=author).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,

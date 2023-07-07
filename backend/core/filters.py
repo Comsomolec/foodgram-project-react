@@ -1,28 +1,15 @@
-from django_filters.rest_framework import FilterSet
 from django_filters.filters import (
     BooleanFilter,
     ModelChoiceField,
     ModelMultipleChoiceFilter
 )
+from django_filters.rest_framework import FilterSet
 from django_filters.widgets import BooleanWidget
 
 from rest_framework.filters import SearchFilter
 
 from recipes.models import Recipe, Tag
 from users.models import User
-
-
-# class TagFilter(FilterSet):
-#   """Фильтрация по тегам."""
-#     tags = ModelMultipleChoiceFilter(
-#         field_name='tags__slug',
-#         to_field_name='slug',
-#         queryset=Tag.objects.all()
-#         )
-
-#     class Meta:
-#         model = Recipe
-#         fields = ['tags']
 
 
 class RecipeFilter(FilterSet):

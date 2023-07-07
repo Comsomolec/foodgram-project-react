@@ -5,8 +5,8 @@ from .models import (
     Tag,
     Recipe,
     Favorite,
-    Shopping_cart,
-    Recipe_ingredients
+    ShoppingCart,
+    RecipeIngredient
 )
 
 
@@ -34,15 +34,11 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Ингредиенты')
     def ingredients(self, object):
-        for ingredient in object.ingredients.all():
-            set_ingredient = ', '.join(ingredient.name)
-        return set_ingredient
+        return object.ingredients.value_list('name')
 
     @admin.display(description='Теги')
     def tags(self, object):
-        for tag in object.tags.all():
-            set_tag = ', '.join(tag.name)
-        return set_tag
+        return object.tags.value_list('name')
 
     @admin.display(description='В избранном')
     def in_favorites(self, object):
@@ -55,13 +51,13 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_editable = ('user', 'recipe', )
 
 
-@admin.register(Shopping_cart)
-class Shopping_cartAdmin(admin.ModelAdmin):
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe', )
     list_editable = ('user', 'recipe', )
 
 
-@admin.register(Recipe_ingredients)
+@admin.register(RecipeIngredient)
 class RecipeIngredientsAdmin(admin.ModelAdmin):
     list_display = ('id', 'recipe', 'ingredient', 'amount', )
     list_editable = ('recipe', 'ingredient', 'amount', )
