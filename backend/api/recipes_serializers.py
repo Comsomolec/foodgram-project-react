@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
-
 from drf_base64.fields import Base64ImageField
+from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (
     Ingredient,
@@ -80,14 +79,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def recipe_ingredient_create(ingredients, recipe):
-        for ingredient in ingredients:
-            RecipeIngredient.objects.bulk_create(
-                [RecipeIngredient(
-                    recipe=recipe,
-                    ingredient_id=ingredient['id'],
-                    amount=ingredient['amount']
-                )]
-            )
+        RecipeIngredient.objects.bulk_create(
+            [RecipeIngredient(
+                recipe=recipe,
+                ingredient_id=ingredient['id'],
+                amount=ingredient['amount']
+            ) for ingredient in ingredients]
+        )
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
