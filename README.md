@@ -1,4 +1,4 @@
-# Foodgram
+# Foodgram!
 
 ![Foodgram_workflow](https://github.com/comsomolec/yamdb_final/actions/workflows/main.yml/badge.svg)
 
