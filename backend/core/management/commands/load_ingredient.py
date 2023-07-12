@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         with open(
-                '/data/ingredients.csv', 'r', encoding='UTF-8') as csv_file:
+                'data/ingredients.csv', 'r', encoding='UTF-8') as csv_file:
             csvreader = csv.reader(csv_file)
             for row in csvreader:
                 Ingredient.objects.bulk_create(
