@@ -6,11 +6,11 @@ from users.models import User
 
 class Ingredient(models.Model):
     name = models.CharField(
-        max_length=50,
+        max_length=100
         verbose_name='Название ингредиента'
     )
     measurement_unit = models.CharField(
-        max_length=50,
+        max_length=100,
         verbose_name='Единица измерения'
     )
 
