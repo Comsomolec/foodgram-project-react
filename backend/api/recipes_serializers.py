@@ -62,12 +62,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for ingredient in value:
             if ingredient.get('id') in ingredients_data:
                 raise serializers.ValidationError(
-                    detail='Ингредиенты не должны повторяться!'
+                    {'error': 'Ингредиенты не должны повторяться!'}
+                    # detail='Ингредиенты не должны повторяться!'
                 )
             ingredients_data.append(ingredient.get('id'))
             if ingredient.get('amount') <= 0:
                 raise serializers.ValidationError(
-                    detail='Неверно указано количество!'
+                    {'error': 'Неверно указано количество!'}
                 )
         return value
 
