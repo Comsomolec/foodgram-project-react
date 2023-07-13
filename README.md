@@ -1,6 +1,6 @@
 # Foodgram!
 
-![Foodgram_workflow](https://github.com/comsomolec/yamdb_final/actions/workflows/main.yml/badge.svg)
+![Foodgram_workflow](https://github.com/comsomolec/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 * Проект доступен по адресу: http://158.160.101.218
 
@@ -84,7 +84,7 @@ sudo apt install docker-compose -y
 Клонировать репозиторий:
 
 ```
-git clone git@github.com:haiksarg/infra_sp2.git
+git clone git@github.com:Comsomolec/foodgram-project-react.git
 cd infra_sp2
 ```
 
