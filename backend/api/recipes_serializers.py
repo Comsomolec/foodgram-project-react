@@ -68,7 +68,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             ingredients_data.append(ingredient.get('id'))
             if ingredient.get('amount') <= 0:
                 raise serializers.ValidationError(
-                    {'error': 'Неверно указано количество!'}
+                    detail={'error': 'Неверно указано количество!'}
                 )
         return value
 
