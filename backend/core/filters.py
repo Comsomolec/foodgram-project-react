@@ -1,7 +1,6 @@
 from django_filters.filters import (
     BooleanFilter,
-    ChoiceFilter,
-    ModelChoiceField,
+        ModelChoiceField,
     ModelMultipleChoiceFilter
 )
 from django_filters.rest_framework import FilterSet
@@ -41,11 +40,9 @@ class RecipeFilter(FilterSet):
     def filter_is_favorite(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
             return queryset.filter(
-                favorite_recipe__user=self.request.user,
-            )
+                favorite_recipe__user=self.request.user)
         return queryset.filter(
-                favorite_recipe__user=self.request.user,
-            )
+            favorite_recipe__user=self.request.user)
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
