@@ -13,10 +13,10 @@ from recipes.models import Recipe, Tag
 from users.models import User
 
 
-STATUS_CHOICES = (
-    (0, 'False'),
-    (1, 'True'),
-)
+# STATUS_CHOICES = (
+#     (0, 'False'),
+#     (1, 'True'),
+# )
 
 
 class RecipeFilter(FilterSet):
@@ -27,8 +27,8 @@ class RecipeFilter(FilterSet):
         to_field_name='slug',
         queryset=Tag.objects.all()
     )
-    is_favorite = ChoiceFilter(
-        choices=STATUS_CHOICES, method='filter_is_favorite'
+    is_favorite = BooleanFilter(
+        method='filter_is_favorite', widget=BooleanWidget()
     )
     is_in_shopping_cart = BooleanFilter(
         method='filter_is_in_shopping_cart', widget=BooleanWidget()
@@ -40,10 +40,12 @@ class RecipeFilter(FilterSet):
 
     def filter_is_favorite(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
-            return Recipe.objects.filter(
+            return queryset.filter(
                 favorite_recipe__user=self.request.user,
             )
-        return queryset
+        return queryset.filter(
+                favorite_recipe__user=self.request.user,
+            )
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
