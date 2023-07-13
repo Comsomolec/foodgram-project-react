@@ -54,10 +54,10 @@ class RecipeViewSet(ModelViewSet):
     ordering = ('-pub_date')
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return RecipeCreateSerializer
-        else:
+        if self.request.method == 'GET':
             return RecipeSerializer
+        else:
+            return RecipeCreateSerializer
 
     @staticmethod
     def favorite_shopping_cart(request, pk, model, serializer):
