@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from drf_base64.fields import Base64ImageField
 from rest_framework.validators import UniqueTogetherValidator
+from rest_framework.exceptions import ValidationError
 
 from recipes.models import (
     Ingredient,
@@ -61,13 +62,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients_data = []
         for ingredient in value:
             if ingredient.get('id') in ingredients_data:
-                raise serializers.ValidationError(
+                raise ValidationError(
                     {'error': 'Ингредиенты не должны повторяться!'}
                     # detail='Ингредиенты не должны повторяться!'
                 )
             ingredients_data.append(ingredient.get('id'))
             if ingredient.get('amount') <= 0:
-                raise serializers.ValidationError(
+                raise ValidationError(
                     detail={'error': 'Неверно указано количество!'}
                 )
         return value
