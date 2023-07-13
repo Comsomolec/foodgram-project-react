@@ -2,6 +2,7 @@ from rest_framework import serializers
 from drf_base64.fields import Base64ImageField
 from rest_framework.validators import UniqueTogetherValidator
 
+from core.validators import CustomValidation
 from recipes.models import (
     Ingredient,
     Tag,
@@ -10,7 +11,6 @@ from recipes.models import (
     Favorite,
     ShoppingCart
 )
-from core.validators import CustomValidation
 from .users_serializers import UserSerializer
 
 
@@ -76,7 +76,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         tags_data = []
         for tag in value:
             if tag in tags_data:
-                raise serializers.ValidationError(
+                raise CustomValidation(
                     'Теги не должны повторяться!'
                 )
             tags_data.append(tag)
