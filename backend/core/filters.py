@@ -1,5 +1,6 @@
 from django_filters.filters import (
     BooleanFilter,
+    ChoiceFilter,
     ModelChoiceField,
     ModelMultipleChoiceFilter
 )
@@ -12,6 +13,12 @@ from recipes.models import Recipe, Tag
 from users.models import User
 
 
+STATUS_CHOICES = (
+    (0, 'False'),
+    (1, 'True'),
+)
+
+
 class RecipeFilter(FilterSet):
     """Фильтрация рецептов."""
     author = ModelChoiceField(queryset=User.objects.all())
@@ -20,8 +27,8 @@ class RecipeFilter(FilterSet):
         to_field_name='slug',
         queryset=Tag.objects.all()
     )
-    is_favorite = BooleanFilter(
-        method='filter_is_favorite', widget=BooleanWidget()
+    is_favorite = ChoiceFilter(
+        choices=STATUS_CHOICES, method='filter_is_favorite'
     )
     is_in_shopping_cart = BooleanFilter(
         method='filter_is_in_shopping_cart', widget=BooleanWidget()
@@ -34,7 +41,7 @@ class RecipeFilter(FilterSet):
     def filter_is_favorite(self, queryset, name, value):
         if value and self.request.user.is_authenticated:
             return Recipe.objects.filter(
-                favorite_recipe__user=self.request.user
+                favorite_recipe__user=self.request.user,
             )
         return queryset
 
